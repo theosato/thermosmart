@@ -48,27 +48,33 @@ def get_info():
 	response = {}
 
 	if request.method == 'GET':
-		response['1'] = {
-			'aparelho': 'Iluminacao',
-			'grafico': plot_encoded(df_labsoft,"Consumo Iluminacao"),
-			'status': ''
-		},
-		response['2'] = {
-			'aparelho': 'Ar condicionado',
-			'grafico': plot_encoded(df_labsoft,"Consumo Iluminacao"),
-			'status': ''
-		},
-		response['3'] = {
-			'aparelho': 'Rede',
-			'grafico': plot_encoded(df_labsoft,"Consumo Rede"),
-			'status': ''
-		},
-		response['previsao'] = {
-			'cidade': 'Sao Paulo',
-			'grafico': plot_previsao('244')
+		response = {
+			'aparelhos': {
+				'1': {
+					'aparelho': 'Iluminacao',
+					'grafico': plot_encoded(df_labsoft,"Consumo Iluminacao"),
+					'status': ''
+				},
+				'2': {
+					'aparelho': 'Iluminacao',
+					'grafico': plot_encoded(df_labsoft,"Consumo Ar Condicionado"),
+					'status': ''
+				},
+				'3': {
+					'aparelho': 'Iluminacao',
+					'grafico': plot_encoded(df_labsoft,"Consumo Rede"),
+					'status': ''
+				},
+			},
+			'previsao': {
+				'cidade': 'Sao Paulo',
+				'grafico': plot_previsao('244')
+			}
 		}
-
+		
 		return jsonify(response)
+
+	return jsonify(response)
 
 ############################################################################################################
 
