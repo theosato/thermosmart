@@ -93,6 +93,9 @@ def plot_encoded(df,nome):
 	tmpfile = BytesIO()
 	fig1.savefig(tmpfile, format='png')
 
+	plt.clf()
+	fig1.clf()
+	
 	return base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
 def plot_previsao(codigo="244"):
@@ -100,7 +103,6 @@ def plot_previsao(codigo="244"):
 
 	df_previsao = pd.DataFrame.from_dict(dict_previsao, orient='index', columns=['Dia', 'Maxima', 'Minima'])
 	df_previsao['Dia'] = pd.to_datetime(df_previsao['Dia'])
-
 	# gca stands for 'get current axis'
 	ax = plt.gca()
 	df_previsao.plot(kind='line',x='Dia',y='Maxima',ax=ax)
@@ -112,6 +114,9 @@ def plot_previsao(codigo="244"):
 	fig1 = plt.gcf()
 	tmpfile = BytesIO()
 	fig1.savefig(tmpfile, format='png')
+
+	plt.clf()
+	fig1.clf()
 
 	return base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
