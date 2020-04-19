@@ -80,7 +80,9 @@ def get_info():
 
 def plot_encoded(df,nome):
 	ax = plt.gca()
-
+	ax.set_facecolor('#333333')
+	ax.tick_params(labelcolor='white')
+	
 	df.plot(kind='line',x='Timestamp',y=nome,ax=ax)
 
 	majorFmt = matdates.DateFormatter('%Y-%m-%d, %H:%M:%S')  
@@ -95,18 +97,20 @@ def plot_encoded(df,nome):
 
 	plt.clf()
 	fig1.clf()
-	
+
 	return base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
 def plot_previsao(codigo="244"):
 	dict_previsao = previsao(codigo)
 
-	df_previsao = pd.DataFrame.from_dict(dict_previsao, orient='index', columns=['Dia', 'Maxima', 'Minima'])
+	df_previsao = pd.DataFrame.from_dict(dict_previsao, orient='index', columns=['Dia', 'Máxima Temperatura', 'Mínima Temperatura'])
 	df_previsao['Dia'] = pd.to_datetime(df_previsao['Dia'])
 	# gca stands for 'get current axis'
 	ax = plt.gca()
-	df_previsao.plot(kind='line',x='Dia',y='Maxima',ax=ax)
-	df_previsao.plot(kind='line',x='Dia',y='Minima',ax=ax)
+	ax.set_facecolor('#333333')
+	ax.tick_params(labelcolor='white')
+	df_previsao.plot(kind='line',x='Dia',y='Máxima Temperatura',ax=ax, color='tomato')
+	df_previsao.plot(kind='line',x='Dia',y='Mínima Temperatura',ax=ax)
 
 	plt.setp(ax.xaxis.get_majorticklabels(), rotation=80)
 	plt.tight_layout()
