@@ -56,12 +56,12 @@ def get_info():
 					'status': ''
 				},
 				'2': {
-					'aparelho': 'Iluminacao',
+					'aparelho': 'Ar Condicionado',
 					'grafico': plot_encoded(df_labsoft,"Consumo Ar Condicionado"),
 					'status': ''
 				},
 				'3': {
-					'aparelho': 'Iluminacao',
+					'aparelho': 'Rede',
 					'grafico': plot_encoded(df_labsoft,"Consumo Rede"),
 					'status': ''
 				},
@@ -71,7 +71,7 @@ def get_info():
 				'grafico': plot_previsao('244')
 			}
 		}
-		
+
 		return jsonify(response)
 
 	return jsonify(response)
