@@ -24,10 +24,9 @@ cors = CORS(app)
 nomes = ['Timestamp', 'Consumo Total', 'Consumo Iluminacao', 'Consumo Servidor', \
 			'Consumo Rede', 'Consumo Ar Condicionado', 'Consumo Bancadas']
 
-df_labsoft = pd.read_csv('medicoes_labsoft.csv', names=nomes)
+df_labsoft = pd.read_csv(r"medicoes_labsoft.csv", names=nomes)
 
 df_labsoft['Timestamp'] = pd.to_datetime(df_labsoft['Timestamp'])
-
 
 ################################################## R O U T E S ##################################################
 @app.route("/")
@@ -45,6 +44,7 @@ def homepage():
 # endpoint to show all lines
 @app.route("/info", methods=['GET'])
 def get_info():
+
 	response = {}
 
 	if request.method == 'GET':
@@ -86,7 +86,7 @@ def plot_encoded(df,nome):
 	fig1 = plt.gcf()
 	tmpfile = BytesIO()
 	fig1.savefig(tmpfile, format='png')
-	
+
 	return base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
 def plot_previsao(codigo="244"):
@@ -106,7 +106,7 @@ def plot_previsao(codigo="244"):
 	fig1 = plt.gcf()
 	tmpfile = BytesIO()
 	fig1.savefig(tmpfile, format='png')
-	
+
 	return base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
 def previsao(codigo):
@@ -126,5 +126,5 @@ def previsao(codigo):
 
 	return previsoes
 
-def main():
-	app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
