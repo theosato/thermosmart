@@ -131,7 +131,7 @@ def create_aparelho():
 
 		return jsonify(response)
 
-	return jsonify("Aparelho não foi adicionado.")
+	return jsonify("Aparelho nao foi adicionado.")
 
 # endpoint to update line
 @app.route("/info/aparelho/<id>", methods=["PUT"])
@@ -149,7 +149,7 @@ def update_aparelho(id):
 
 			return aparelho_schema.jsonify(aparelho) 
 		pass
-	return jsonify("Aparelho não encontrado.")
+	return jsonify("Aparelho nao encontrado.")
 
 ############################################################################################################
 
