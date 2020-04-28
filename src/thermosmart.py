@@ -96,6 +96,7 @@ def get_info():
 				id = str(aparelho.id)
 
 				response['aparelhos'][id] = {
+					'id': aparelho.id,
 					'aparelho': aparelho.nome,
 					'local': aparelho.local,
 					'marca': aparelho.marca,
@@ -119,7 +120,7 @@ def create_aparelho():
 		modelo = request.json['modelo']
 		local = request.json['local']
 		nome = request.json['nome']
-		
+
 		novo_aparelho = Aparelho(local, nome, marca, modelo, status)
 		db.session.add(novo_aparelho)
 		db.session.commit()
