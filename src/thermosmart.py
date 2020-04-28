@@ -100,7 +100,7 @@ def get_info():
 					'marca': aparelho.marca,
 					'modelo': aparelho.modelo,
 					'status': aparelho.status,
-					'grafico': plot_encoded(df_labsoft,"Consumo "+aparelho.nome),
+					'grafico': plot_encoded(df_labsoft,"Consumo "+aparelho.nome.title()),
 				}
 
 		return jsonify(response)
