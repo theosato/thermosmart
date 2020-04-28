@@ -21,12 +21,45 @@ import matplotlib.dates as matdates
 app = Flask(__name__)
 cors = CORS(app)
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'crud.sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
+
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+
 nomes = ['Timestamp', 'Consumo Total', 'Consumo Iluminacao', 'Consumo Servidor', \
-			'Consumo Rede', 'Consumo Ar Condicionado', 'Consumo Bancadas']
+			'Consumo Rede', 'Consumo Bancadas', 'Consumo Ar Condicionado']
 
 df_labsoft = pd.read_csv(r"medicoes_labsoft.csv", names=nomes)
 
 df_labsoft['Timestamp'] = pd.to_datetime(df_labsoft['Timestamp'])
+
+################################################## M O D E L S ##################################################
+class Aparelho(db.Model):
+	__tablename__ = 'aparelho'
+	id = db.Column(db.Integer, primary_key=True)
+	status = db.Column(db.String(50), unique=False)
+	marca = db.Column(db.String(50), unique=False)
+	modelo = db.Column(db.String(50), unique=False)
+	local = db.Column(db.String(50), unique=False)
+	nome = db.Column(db.String(50), unique=True)
+
+	def __init__(self, local, nome, marca = "Nenhum", modelo = "Nenhum", status = "Desligado"):
+		self.status = status
+		self.marca = marca
+		self.modelo = modelo
+		self.local = local
+		self.nome = nome
+
+################################################## S C H E M A ##################################################
+class AparelhoSchema(ma.Schema):
+    class Meta:
+        # Fields to expose
+        fields = ('id', 'status', 'marca', 'modelo', 'local', 'nome')
+
+aparelho_schema = AparelhoSchema()
+aparelhos_schema = AparelhoSchema(many=True)
 
 ################################################## R O U T E S ##################################################
 @app.route("/")
@@ -47,34 +80,71 @@ def get_info():
 
 	response = {}
 
+	response['aparelhos'] = {}
+
+	response['previsao'] = {
+		'cidade': 'Sao Paulo',
+		'grafico': plot_previsao('244')
+	}
+
 	if request.method == 'GET':
-		response = {
-			'aparelhos': {
-				'1': {
-					'aparelho': 'Iluminacao',
-					'grafico': plot_encoded(df_labsoft,"Consumo Iluminacao"),
-					'status': ''
-				},
-				'2': {
-					'aparelho': 'Ar Condicionado',
-					'grafico': plot_encoded(df_labsoft,"Consumo Ar Condicionado"),
-					'status': ''
-				},
-				'3': {
-					'aparelho': 'Rede',
-					'grafico': plot_encoded(df_labsoft,"Consumo Rede"),
-					'status': ''
-				},
-			},
-			'previsao': {
-				'cidade': 'Sao Paulo',
-				'grafico': plot_previsao('244')
-			}
-		}
+		all_aparelhos = Aparelho.query.all()
+
+		if len(all_aparelhos) > 0: 
+			for aparelho in all_aparelhos:
+				id = str(aparelho.id)
+
+				response['aparelhos'][id] = {
+					'aparelho': aparelho.nome,
+					'local': aparelho.local,
+					'marca': aparelho.marca,
+					'modelo': aparelho.modelo,
+					'status': aparelho.status,
+					'grafico': plot_encoded(df_labsoft,"Consumo "+aparelho.nome),
+				}
 
 		return jsonify(response)
 
 	return jsonify(response)
+
+	
+# endpoint to show all lines
+@app.route("/info/aparelho", methods=['POST'])
+def create_aparelho():
+	if request.method == 'POST':
+		status = request.json['status']
+		marca = request.json['marca']
+		modelo = request.json['modelo']
+		local = request.json['local']
+		nome = request.json['nome']
+
+		novo_aparelho = Aparelho(status, marca, modelo, local, nome)
+		db.session.add(novo_aparelho)
+		db.session.commit()
+
+		response = aparelho_schema.dump(novo_aparelho)
+		print("\n \n \n \n")
+		print(response,type(response))
+		print("\n \n \n \n")
+
+		return jsonify(response)
+
+# endpoint to update line
+@app.route("/info/aparelho/<id>", methods=["PUT"])
+def update_aparelho(id):
+    if request.method == 'PUT':
+
+        aparelho = Aparelho.query.get(id)
+
+        if aparelho is not None:
+            if 'status' in request.json.keys():
+                aparelho.status = request.json['status']
+            
+            db.session.commit()
+
+            return aparelho_schema.jsonify(aparelho)
+
+        return None
 
 ############################################################################################################
 
@@ -82,7 +152,7 @@ def plot_encoded(df,nome):
 	ax = plt.gca()
 	ax.set_facecolor('#333333')
 	ax.tick_params(labelcolor='white')
-	
+
 	df.plot(kind='line',x='Timestamp',y=nome,ax=ax)
 
 	majorFmt = matdates.DateFormatter('%Y-%m-%d, %H:%M:%S')  
@@ -93,7 +163,7 @@ def plot_encoded(df,nome):
 
 	fig1 = plt.gcf()
 	tmpfile = BytesIO()
-	fig1.savefig(tmpfile, format='png')
+	fig1.savefig(tmpfile, format='png', transparent=True)
 
 	plt.clf()
 	fig1.clf()
@@ -117,7 +187,7 @@ def plot_previsao(codigo="244"):
 
 	fig1 = plt.gcf()
 	tmpfile = BytesIO()
-	fig1.savefig(tmpfile, format='png')
+	fig1.savefig(tmpfile, format='png', transparent=True)
 
 	plt.clf()
 	fig1.clf()
