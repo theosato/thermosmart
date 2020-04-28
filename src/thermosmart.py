@@ -178,14 +178,14 @@ def plot_encoded(df,nome):
 def plot_previsao(codigo="244"):
 	dict_previsao = previsao(codigo)
 
-	df_previsao = pd.DataFrame.from_dict(dict_previsao, orient='index', columns=['Dia', 'Máxima Temperatura', 'Mínima Temperatura'])
+	df_previsao = pd.DataFrame.from_dict(dict_previsao, orient='index', columns=['Dia', 'Maxima Temperatura', 'Minima Temperatura'])
 	df_previsao['Dia'] = pd.to_datetime(df_previsao['Dia'])
 	# gca stands for 'get current axis'
 	ax = plt.gca()
 	ax.set_facecolor('#333333')
 	ax.tick_params(labelcolor='white')
-	df_previsao.plot(kind='line',x='Dia',y='Máxima Temperatura',ax=ax, color='tomato')
-	df_previsao.plot(kind='line',x='Dia',y='Mínima Temperatura',ax=ax)
+	df_previsao.plot(kind='line',x='Dia',y='Maxima Temperatura',ax=ax, color='tomato')
+	df_previsao.plot(kind='line',x='Dia',y='Minima Temperatura',ax=ax)
 
 	plt.setp(ax.xaxis.get_majorticklabels(), rotation=80)
 	plt.tight_layout()
