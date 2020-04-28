@@ -70,7 +70,8 @@ def homepage():
 		"status_code": 200,
 		"message": text,
 		"/info [GET]": "retorna um json com as informações de gasto de energia ",
-		"/info/<id>/status [POST]": "altera o status do aparelho de acordo com o seu id"
+		"/info/aparelho [POST]": "cria um novo aparelho no banco de dados",
+		"/info/aparelho/id [PUT]": "altera o status do aparelho de acordo com o seu id"
 	} 
 	return jsonify(response)
 
