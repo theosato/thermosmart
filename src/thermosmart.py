@@ -111,6 +111,7 @@ def get_info():
 # endpoint to show all lines
 @app.route("/info/aparelho", methods=['POST'])
 def create_aparelho():
+	response = {}
 	if request.method == 'POST':
 		status = request.json['status']
 		marca = request.json['marca']
@@ -129,22 +130,25 @@ def create_aparelho():
 
 		return jsonify(response)
 
+	return jsonify("Aparelho não foi adicionado.")
+
 # endpoint to update line
 @app.route("/info/aparelho/<id>", methods=["PUT"])
 def update_aparelho(id):
-    if request.method == 'PUT':
+	if request.method == 'PUT':
+		aparelho = Aparelho.query.get(id)
 
-        aparelho = Aparelho.query.get(id)
+		if aparelho is not None:
+			if aparelho.status == "Desligado":
+				aparelho.status = "Ligado"
+			else:
+				aparelho.status = "Desligado"	
+			
+			db.session.commit()
 
-        if aparelho is not None:
-            if 'status' in request.json.keys():
-                aparelho.status = request.json['status']
-            
-            db.session.commit()
-
-            return aparelho_schema.jsonify(aparelho)
-
-        return None
+			return aparelho_schema.jsonify(aparelho) 
+		pass
+	return jsonify("Aparelho não encontrado.")
 
 ############################################################################################################
 
