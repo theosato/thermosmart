@@ -119,8 +119,8 @@ def create_aparelho():
 		modelo = request.json['modelo']
 		local = request.json['local']
 		nome = request.json['nome']
-
-		novo_aparelho = Aparelho(status, marca, modelo, local, nome)
+		
+		novo_aparelho = Aparelho(local, nome, marca, modelo, status)
 		db.session.add(novo_aparelho)
 		db.session.commit()
 
