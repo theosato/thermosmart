@@ -69,7 +69,7 @@ def homepage():
 	response = {
 		"status_code": 200,
 		"message": text,
-		"/info [GET]": "retorna um json com as informações de gasto de energia ",
+		"/info [GET]": "retorna um json com as informacoes de gasto de energia ",
 		"/info/aparelho [POST]": "cria um novo aparelho no banco de dados",
 		"/info/aparelho/id [PUT]": "altera o status do aparelho de acordo com o seu id"
 	} 
