@@ -9,7 +9,7 @@ cycler==0.10.0
 DateTime==4.3
 decorator==4.4.2
 Flask==1.1.1
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 flask-marshmallow==0.11.0
 Flask-SQLAlchemy==2.4.1
 idna==2.9
